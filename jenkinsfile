@@ -1,0 +1,29 @@
+pipeline {
+    agent any // Use any available Jenkins agent
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/saravanan2024chennai/jacocoapp.git' // Replace with your repo URL and branch
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install' // Or 'gradlew clean build' for Gradle projects
+            }
+        }
+
+        stage('JaCoCo Report') {
+            steps {
+                jacoco() // This crucial step integrates JaCoCo with Jenkins
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts '*.exec, **/site/jacoco/**' // Archive JaCoCo reports
+        }
+    }
+}
